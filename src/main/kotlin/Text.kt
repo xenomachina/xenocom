@@ -21,7 +21,7 @@ package com.xenomachina.common
 /**
  * Performs the given [operation] on each line in this [String].
  */
-internal inline fun String.forEachLine(operation: (String) -> Unit) {
+inline fun String.forEachLine(operation: (String) -> Unit) {
     var index = 0
     while (true) {
         val nextNewline = indexOf("\n", index)
@@ -29,13 +29,13 @@ internal inline fun String.forEachLine(operation: (String) -> Unit) {
         operation(substring(index, nextNewline + 1))
         index = nextNewline + 1
     }
-    operation(substring(index))
+    if (index < this.length) operation(substring(index))
 }
 
 /**
  * Performs the given [operation] on each Unicode codepoint in this [String].
  */
-internal inline fun String.forEachCodePoint(operation: (Int) -> Unit) {
+inline fun String.forEachCodePoint(operation: (Int) -> Unit) {
     val length = this.length
     var offset = 0
     while (offset < length) {
@@ -45,13 +45,13 @@ internal inline fun String.forEachCodePoint(operation: (Int) -> Unit) {
     }
 }
 
-internal fun StringBuilder.clear() {
+fun StringBuilder.clear() {
     this.setLength(0)
 }
 
 internal val SPACE_WIDTH = 1
 
-internal fun String.padTo(width: Int): String {
+fun String.padTo(width: Int): String {
     val sb = StringBuilder()
     var lineWidth = 0
     forEachCodePoint {

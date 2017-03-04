@@ -1,4 +1,4 @@
-// Copyright © 2016 Laurence Gonsalves
+// Copyright © 2017 Laurence Gonsalves
 //
 // This file is part of xenocom, a library which can be found at
 // http://github.com/xenomachina/xenocom
@@ -18,34 +18,33 @@
 
 package com.xenomachina.common
 
-//import org.junit.Assert.assertEquals
-//import org.junit.Assert.assertTrue
-//import org.junit.Assert.assertFalse
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TestName
+import io.kotlintest.specs.FunSpec
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertNotNull
 
-class CommonTest {
-    @JvmField @Rule
-    val testName: TestName = TestName()
-
-    inline fun <reified X : Throwable> shouldThrow(f: () -> Unit): X {
-        val javaClass = X::class.java
-        try {
-            f()
-        } catch (exception: Throwable) {
-            if (javaClass.isInstance(exception)) return javaClass.cast(exception)
-            throw exception
+class CommonTest : FunSpec() {
+    init {
+        var holder : Holder<String?>?
+        test("null") {
+            holder = null
+            assertNull(holder)
+            assertNull(holder.orElse { null })
+            assertEquals("fallback", holder.orElse { "fallback" })
         }
-        throw AssertionError("Expected ${javaClass.canonicalName} to be thrown")
-    }
 
-    @Test
-    fun testSomething() {
-        //shouldThrow<FooException> {
-        //    // TODO
-        //}.run {
-        //    assertEquals("TODO", message)
-        //}
+        test("Holder(null)") {
+            holder = Holder(null)
+            assertNotNull(holder)
+            assertNull(holder.orElse { null })
+            assertNull(holder.orElse { "fallback" })
+        }
+
+        test("Holder(nonNull)") {
+            holder = Holder("value")
+            assertNotNull(holder)
+            assertEquals("value", holder.orElse { null })
+            assertEquals("value", holder.orElse { "fallback" })
+        }
     }
 }
