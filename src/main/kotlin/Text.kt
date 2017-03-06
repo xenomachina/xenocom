@@ -20,8 +20,6 @@ package com.xenomachina.common
 
 import kotlin.coroutines.experimental.buildSequence
 
-// TODO: fix visibility
-
 /**
  * Splits [String] into a [Sequence] of lines. Newlines are included on any lines that are terminated by one.
  */
@@ -53,7 +51,7 @@ fun StringBuilder.clear() {
     this.setLength(0)
 }
 
-internal val SPACE_WIDTH = 1
+internal const val SPACE_WIDTH = 1
 
 fun String.padTo(width: Int): String {
     val sb = StringBuilder()
@@ -74,9 +72,9 @@ fun String.padTo(width: Int): String {
     return sb.toString()
 }
 
-internal val NBSP_CODEPOINT = 0xa0
+internal const val NBSP_CODEPOINT = 0xa0
 
-internal fun String.wrapText(maxWidth: Int): String {
+fun String.wrapText(maxWidth: Int): String {
     val sb = StringBuilder()
     val word = StringBuilder()
     var lineWidth = 0
@@ -129,7 +127,7 @@ internal fun String.wrapText(maxWidth: Int): String {
  * This function is based on the public domain [wcwidth.c](https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c)
  * written by Markus Kuhn.
  */
-internal fun codePointWidth(ucs: Int): Int {
+fun codePointWidth(ucs: Int): Int {
     // 8-bit control characters
     if (ucs == 0) return 0
     if (ucs < 32 || (ucs >= 0x7f && ucs < 0xa0)) return -1
@@ -163,7 +161,7 @@ internal fun codePointWidth(ucs: Int): Int {
 
 fun String.codePointWidth(): Int = codePointSequence().sumBy { codePointWidth(it) }
 
-internal fun String.trimNewline(): String {
+fun String.trimNewline(): String {
     if (endsWith('\n')) {
         return substring(0, length - 1)
     } else {
@@ -171,7 +169,7 @@ internal fun String.trimNewline(): String {
     }
 }
 
-internal fun columnize(vararg s: String, minWidths: IntArray? = null): String {
+fun columnize(vararg s: String, minWidths: IntArray? = null): String {
     val columns = Array(s.size) { mutableListOf<String>() }
     val widths = Array(s.size) { 0 }
     for (i in 0..s.size - 1) {
