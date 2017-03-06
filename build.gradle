@@ -77,7 +77,7 @@ configurations {
 }
 
 dependencies {
-    ktlint 'com.github.shyiko:ktlint:0.3.1'
+    ktlint 'com.github.shyiko:ktlint:0.6.0'
 }
 
 task ktlint(type: JavaExec) {
