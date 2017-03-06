@@ -39,7 +39,7 @@ fun String.lineSequence() : Sequence<String> = buildSequence {
 /**
  * Produces a [Sequence] of the Unicode code points in the given [String].
  */
-inline fun String.codePointSequence() : Sequence<Int> = buildSequence {
+fun String.codePointSequence() : Sequence<Int> = buildSequence {
     val length = length
     var offset = 0
     while (offset < length) {
@@ -129,8 +129,7 @@ internal fun String.wrapText(maxWidth: Int): String {
  * This function is based on the public domain [wcwidth.c](https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c)
  * written by Markus Kuhn.
  */
-internal fun codePointWidth(ucs: Int): Byte {
-    // TODO: return Int
+internal fun codePointWidth(ucs: Int): Int {
     // 8-bit control characters
     if (ucs == 0) return 0
     if (ucs < 32 || (ucs >= 0x7f && ucs < 0xa0)) return -1
@@ -162,14 +161,7 @@ internal fun codePointWidth(ucs: Int): Byte {
         2 else 1
 }
 
-// TODO: fun String.codePointWidth(): Int  = codePointSequence().sumBy { codePointWidth(it) as Int }
-internal fun String.codePointWidth(): Int {
-    var result = 0
-    for (codePoint in codePointSequence()) {
-        result += codePointWidth(codePoint)
-    }
-    return result
-}
+fun String.codePointWidth(): Int = codePointSequence().sumBy { codePointWidth(it) }
 
 internal fun String.trimNewline(): String {
     if (endsWith('\n')) {
