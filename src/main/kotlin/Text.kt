@@ -21,20 +21,6 @@ package com.xenomachina.common
 import kotlin.coroutines.experimental.buildSequence
 
 /**
- * Performs the given [operation] on each line in this [String].
- */
-inline fun String.forEachLine(operation: (String) -> Unit) {
-    var index = 0
-    while (true) {
-        val nextNewline = indexOf("\n", index)
-        if (nextNewline < 0) break
-        operation(substring(index, nextNewline + 1))
-        index = nextNewline + 1
-    }
-    if (index < this.length) operation(substring(index))
-}
-
-/**
  * Splits [String] into a [Sequence] of lines. Newlines are included on any lines that are terminated by one.
  */
 fun String.lineSequence() : Sequence<String> = buildSequence {
@@ -196,8 +182,8 @@ internal fun columnize(vararg s: String, minWidths: IntArray? = null): String {
         if (minWidths != null && i < minWidths.size) {
             widths[i] = minWidths[i]
         }
-        s[i].forEachLine {
-            val cell = it.trimNewline()
+        for (line in s[i].lineSequence()) {
+            val cell = line.trimNewline()
             columns[i].add(cell)
             widths[i] = widths[i].coerceAtLeast(cell.codePointWidth())
         }

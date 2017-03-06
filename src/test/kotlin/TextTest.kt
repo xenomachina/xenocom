@@ -21,69 +21,6 @@ package com.xenomachina.common
 import io.kotlintest.specs.FunSpec
 import org.junit.Assert.assertEquals
 
-class ForEachLineTest : FunSpec() {
-    init {
-        test("empty") {
-            val lines = mutableListOf<String>()
-            "".forEachLine { lines.add(it) }
-            assertEquals(listOf<String>(), lines)
-        }
-
-        test("one line, no newline") {
-            val lines = mutableListOf<String>()
-            "foo".forEachLine { lines.add(it) }
-            assertEquals(listOf("foo"), lines)
-        }
-
-        test("one line, with newline") {
-            val lines = mutableListOf<String>()
-            "foo\n".forEachLine { lines.add(it) }
-            assertEquals(listOf("foo\n"), lines)
-        }
-
-        test("multi-line, no trailing newline") {
-            val lines = mutableListOf<String>()
-            "foo\nbar\nbaz".forEachLine { lines.add(it) }
-            assertEquals(listOf("foo\n", "bar\n", "baz"), lines)
-        }
-
-        test("multi-line, trailing newline") {
-            val lines = mutableListOf<String>()
-            "foo\nbar\nbaz\n".forEachLine { lines.add(it) }
-            assertEquals(listOf("foo\n", "bar\n", "baz\n"), lines)
-        }
-        test("empty") {
-            val lines = mutableListOf<String>()
-            "".forEachLine { lines.add(it) }
-            assertEquals(listOf<String>(), lines)
-        }
-
-        test("one line, no newline") {
-            val lines = mutableListOf<String>()
-            "foo".forEachLine { lines.add(it) }
-            assertEquals(listOf("foo"), lines)
-        }
-
-        test("one line, with newline") {
-            val lines = mutableListOf<String>()
-            "foo\n".forEachLine { lines.add(it) }
-            assertEquals(listOf("foo\n"), lines)
-        }
-
-        test("multi-line, no trailing newline") {
-            val lines = mutableListOf<String>()
-            "foo\nbar\nbaz".forEachLine { lines.add(it) }
-            assertEquals(listOf("foo\n", "bar\n", "baz"), lines)
-        }
-
-        test("multi-line, trailing newline") {
-            val lines = mutableListOf<String>()
-            "foo\nbar\nbaz\n".forEachLine { lines.add(it) }
-            assertEquals(listOf("foo\n", "bar\n", "baz\n"), lines)
-        }
-    }
-}
-
 internal fun <T> Sequence<T>.shouldContain(vararg expected: T) {
     assertEquals(expected.toList(), toList())
 }
