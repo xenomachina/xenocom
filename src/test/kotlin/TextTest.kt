@@ -94,7 +94,23 @@ class CodepointSequenceTest : FunSpec() {
     }
 }
 
-// TODO: test StringBuilder.clear
+class StringBuilderClear : FunSpec() {
+    init {
+        test("empty") {
+            val sb = StringBuilder()
+            sb.clear()
+            assertEquals("", sb.toString())
+        }
+
+        test("non-empty") {
+            val sb = StringBuilder()
+            sb.append("hello")
+            sb.clear()
+            assertEquals("", sb.toString())
+        }
+    }
+}
+
 // TODO: test String.padTo
 // TODO: test String.wrapText
 // TODO: test codePointWidth
