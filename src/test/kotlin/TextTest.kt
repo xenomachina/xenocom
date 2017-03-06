@@ -21,45 +21,127 @@ package com.xenomachina.common
 import io.kotlintest.specs.FunSpec
 import org.junit.Assert.assertEquals
 
-class TextTest : FunSpec() {
+class ForEachLineTest : FunSpec() {
     init {
-        test("forEachLine, empty") {
+        test("empty") {
             val lines = mutableListOf<String>()
             "".forEachLine { lines.add(it) }
             assertEquals(listOf<String>(), lines)
         }
 
-        test("forEachLine, one line, no newline") {
+        test("one line, no newline") {
             val lines = mutableListOf<String>()
             "foo".forEachLine { lines.add(it) }
             assertEquals(listOf("foo"), lines)
         }
 
-        test("forEachLine, one line, with newline") {
+        test("one line, with newline") {
             val lines = mutableListOf<String>()
             "foo\n".forEachLine { lines.add(it) }
             assertEquals(listOf("foo\n"), lines)
         }
 
-        test("forEachLine, multi-line, no trailing newline") {
+        test("multi-line, no trailing newline") {
             val lines = mutableListOf<String>()
             "foo\nbar\nbaz".forEachLine { lines.add(it) }
             assertEquals(listOf("foo\n", "bar\n", "baz"), lines)
         }
 
-        test("forEachLine, multi-line, trailing newline") {
+        test("multi-line, trailing newline") {
+            val lines = mutableListOf<String>()
+            "foo\nbar\nbaz\n".forEachLine { lines.add(it) }
+            assertEquals(listOf("foo\n", "bar\n", "baz\n"), lines)
+        }
+        test("empty") {
+            val lines = mutableListOf<String>()
+            "".forEachLine { lines.add(it) }
+            assertEquals(listOf<String>(), lines)
+        }
+
+        test("one line, no newline") {
+            val lines = mutableListOf<String>()
+            "foo".forEachLine { lines.add(it) }
+            assertEquals(listOf("foo"), lines)
+        }
+
+        test("one line, with newline") {
+            val lines = mutableListOf<String>()
+            "foo\n".forEachLine { lines.add(it) }
+            assertEquals(listOf("foo\n"), lines)
+        }
+
+        test("multi-line, no trailing newline") {
+            val lines = mutableListOf<String>()
+            "foo\nbar\nbaz".forEachLine { lines.add(it) }
+            assertEquals(listOf("foo\n", "bar\n", "baz"), lines)
+        }
+
+        test("multi-line, trailing newline") {
             val lines = mutableListOf<String>()
             "foo\nbar\nbaz\n".forEachLine { lines.add(it) }
             assertEquals(listOf("foo\n", "bar\n", "baz\n"), lines)
         }
     }
-
-    // TODO: test String.forEachCodePoint
-    // TODO: test StringBuilder.clear
-    // TODO: test String.padTo
-    // TODO: test String.wrapText
-    // TODO: test codePointWidth
-    // TODO: test String.codePointWidth
-    // TODO: test String.trimNewline
-    // TODO: test columnize
 }
+
+internal fun <T> Sequence<T>.shouldContain(vararg expected: T) {
+    assertEquals(expected.toList(), toList())
+}
+
+class LineSequenceTest : FunSpec() {
+    init {
+        test("empty") {
+            "".lineSequence().shouldContain()
+        }
+
+        test("one line, no newline") {
+            "foo".lineSequence().shouldContain("foo")
+        }
+
+        test("one line, with newline") {
+            "foo\n".lineSequence().shouldContain("foo\n")
+        }
+
+        test("multi-line, no trailing newline") {
+            "foo\nbar\nbaz".lineSequence().shouldContain("foo\n", "bar\n", "baz")
+        }
+
+        test("multi-line, trailing newline") {
+            "foo\nbar\nbaz\n".lineSequence().shouldContain("foo\n", "bar\n", "baz\n")
+        }
+        test("empty") {
+            "".lineSequence().shouldContain()
+        }
+
+        test("one line, no newline") {
+            "foo".lineSequence().shouldContain("foo")
+        }
+
+        test("one line, with newline") {
+            "foo\n".lineSequence().shouldContain("foo\n")
+        }
+
+        test("multi-line, no trailing newline") {
+            "foo\nbar\nbaz".lineSequence().shouldContain("foo\n", "bar\n", "baz")
+        }
+
+        test("multi-line, trailing newline") {
+            "foo\nbar\nbaz\n".lineSequence().shouldContain("foo\n", "bar\n", "baz\n")
+        }
+
+        test("can iterate multiple times") {
+            val lineSequence = "foo\nbar\nbaz\n".lineSequence()
+            lineSequence.shouldContain("foo\n", "bar\n", "baz\n")
+            lineSequence.shouldContain("foo\n", "bar\n", "baz\n")
+        }
+    }
+}
+
+// TODO: test String.forEachCodePoint
+// TODO: test StringBuilder.clear
+// TODO: test String.padTo
+// TODO: test String.wrapText
+// TODO: test codePointWidth
+// TODO: test String.codePointWidth
+// TODO: test String.trimNewline
+// TODO: test columnize

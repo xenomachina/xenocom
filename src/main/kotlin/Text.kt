@@ -18,6 +18,8 @@
 
 package com.xenomachina.common
 
+import kotlin.coroutines.experimental.buildSequence
+
 /**
  * Performs the given [operation] on each line in this [String].
  */
@@ -30,6 +32,20 @@ inline fun String.forEachLine(operation: (String) -> Unit) {
         index = nextNewline + 1
     }
     if (index < this.length) operation(substring(index))
+}
+
+/**
+ * Splits [String] into a [Sequence] of lines. Newlines are included on any lines that are terminated by one.
+ */
+fun String.lineSequence() : Sequence<String> = buildSequence {
+    var index = 0
+    while (true) {
+        val nextNewline = indexOf("\n", index)
+        if (nextNewline < 0) break
+        yield(substring(index, nextNewline + 1))
+        index = nextNewline + 1
+    }
+    if (index < length) yield(substring(index))
 }
 
 /**
