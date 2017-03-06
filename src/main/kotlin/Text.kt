@@ -20,6 +20,8 @@ package com.xenomachina.common
 
 import kotlin.coroutines.experimental.buildSequence
 
+// TODO: fix visibility
+
 /**
  * Splits [String] into a [Sequence] of lines. Newlines are included on any lines that are terminated by one.
  */
@@ -35,14 +37,14 @@ fun String.lineSequence() : Sequence<String> = buildSequence {
 }
 
 /**
- * Performs the given [operation] on each Unicode codepoint in this [String].
+ * Produces a [Sequence] of the Unicode code points in the given [String].
  */
-inline fun String.forEachCodePoint(operation: (Int) -> Unit) {
-    val length = this.length
+inline fun String.codePointSequence() : Sequence<Int> = buildSequence {
+    val length = length
     var offset = 0
     while (offset < length) {
-        val codePoint = this.codePointAt(offset)
-        operation(codePoint)
+        val codePoint = codePointAt(offset)
+        yield(codePoint)
         offset += Character.charCount(codePoint)
     }
 }
@@ -56,8 +58,8 @@ internal val SPACE_WIDTH = 1
 fun String.padTo(width: Int): String {
     val sb = StringBuilder()
     var lineWidth = 0
-    forEachCodePoint {
-        if (it == '\n'.toInt()) {
+    for (codePoint in codePointSequence()) {
+        if (codePoint == '\n'.toInt()) {
             while (lineWidth < width) {
                 sb.append(" ")
                 lineWidth += SPACE_WIDTH
@@ -65,8 +67,8 @@ fun String.padTo(width: Int): String {
             sb.append("\n")
             lineWidth = 0
         } else {
-            sb.appendCodePoint(it)
-            lineWidth += codePointWidth(it)
+            sb.appendCodePoint(codePoint)
+            lineWidth += codePointWidth(codePoint)
         }
     }
     return sb.toString()
@@ -91,14 +93,14 @@ internal fun String.wrapText(maxWidth: Int): String {
             wordWidth = 0
         }
     }
-    forEachCodePoint {
-        if (Character.isSpaceChar(it) && it != NBSP_CODEPOINT) {
+    for (inputCodePoint in codePointSequence()) {
+        if (Character.isSpaceChar(inputCodePoint) && inputCodePoint != NBSP_CODEPOINT) {
             // space
             handleSpace()
         } else {
             // non-space
-            val codepoint = if (it == NBSP_CODEPOINT) ' '.toInt() else it
-            val charWidth = codePointWidth(codepoint).toInt()
+            val outputCodePoint = if (inputCodePoint == NBSP_CODEPOINT) ' '.toInt() else inputCodePoint
+            val charWidth = codePointWidth(outputCodePoint).toInt()
             if (lineWidth > 0 && lineWidth + SPACE_WIDTH + wordWidth + charWidth > maxWidth) {
                 sb.append("\n")
                 lineWidth = 0
@@ -111,7 +113,7 @@ internal fun String.wrapText(maxWidth: Int): String {
                 sb.append("\n")
                 lineWidth = 0
             }
-            word.appendCodePoint(codepoint)
+            word.appendCodePoint(outputCodePoint)
             wordWidth += charWidth
         }
     }
@@ -128,6 +130,7 @@ internal fun String.wrapText(maxWidth: Int): String {
  * written by Markus Kuhn.
  */
 internal fun codePointWidth(ucs: Int): Byte {
+    // TODO: return Int
     // 8-bit control characters
     if (ucs == 0) return 0
     if (ucs < 32 || (ucs >= 0x7f && ucs < 0xa0)) return -1
@@ -159,10 +162,11 @@ internal fun codePointWidth(ucs: Int): Byte {
         2 else 1
 }
 
+// TODO: fun String.codePointWidth(): Int  = codePointSequence().sumBy { codePointWidth(it) as Int }
 internal fun String.codePointWidth(): Int {
     var result = 0
-    forEachCodePoint {
-        result += codePointWidth(it)
+    for (codePoint in codePointSequence()) {
+        result += codePointWidth(codePoint)
     }
     return result
 }

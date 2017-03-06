@@ -77,30 +77,23 @@ class LineSequenceTest : FunSpec() {
 class CodepointSequenceTest : FunSpec() {
     init {
         test("empty") {
-            "".forEachCodePoint { throw AssertionError("shouldn't execute this at all") }
+            "".codePointSequence().shouldContain()
         }
 
         test("ASCII characters") {
-            val actual = mutableListOf<Int>()
-            "foo".forEachCodePoint { actual.add(it) }
-            assertEquals(listOf(0x66, 0x6f, 0x6f), actual)
+            "foo".codePointSequence().shouldContain(0x66, 0x6f, 0x6f)
         }
 
         test("non-ASCII, BMP characters") {
-            val actual = mutableListOf<Int>()
-            "你好吗".forEachCodePoint { actual.add(it) }
-            assertEquals(listOf(0x4f60, 0x597d, 0x5417), actual)
+            "你好吗".codePointSequence().shouldContain(0x4f60, 0x597d, 0x5417)
         }
 
         test("non-BMP characters") {
-            val actual = mutableListOf<Int>()
-            "\ud83c\udc1c\ud83d\ude4f".forEachCodePoint { actual.add(it) }
-            assertEquals(listOf(0x1f01c, 0x1f64f), actual)
+            "\ud83c\udc1c\ud83d\ude4f".codePointSequence().shouldContain(0x1f01c, 0x1f64f)
         }
     }
 }
 
-// TODO: test String.forEachCodePoint
 // TODO: test StringBuilder.clear
 // TODO: test String.padTo
 // TODO: test String.wrapText
