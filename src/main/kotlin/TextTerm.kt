@@ -18,12 +18,12 @@
 
 package com.xenomachina.text.term
 
+import com.xenomachina.text.NBSP_CODEPOINT
 import com.xenomachina.text.clear
 import com.xenomachina.text.codePointSequence
 import com.xenomachina.text.trimNewline
 
 internal const val SPACE_WIDTH = 1
-internal const val NBSP_CODEPOINT = 0xa0
 
 // TODO: rename to padLinesToWidth
 fun String.padTo(width: Int): String {

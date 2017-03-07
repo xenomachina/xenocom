@@ -20,6 +20,8 @@ package com.xenomachina.text
 
 import kotlin.coroutines.experimental.buildSequence
 
+const val NBSP_CODEPOINT = 0xa0
+
 /**
  * Produces a [Sequence] of the Unicode code points in the given [String].
  */
