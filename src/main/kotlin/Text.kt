@@ -20,21 +20,6 @@ package com.xenomachina.text
 
 import kotlin.coroutines.experimental.buildSequence
 
-// TODO: remove this
-/**
- * Splits [String] into a [Sequence] of lines. Newlines are included on any lines that are terminated by one.
- */
-fun String.lineSequence() : Sequence<String> = buildSequence {
-    var index = 0
-    while (true) {
-        val nextNewline = indexOf("\n", index)
-        if (nextNewline < 0) break
-        yield(substring(index, nextNewline + 1))
-        index = nextNewline + 1
-    }
-    if (index < length) yield(substring(index))
-}
-
 /**
  * Produces a [Sequence] of the Unicode code points in the given [String].
  */

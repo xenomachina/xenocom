@@ -25,55 +25,6 @@ internal fun <T> Sequence<T>.shouldContain(vararg expected: T) {
     assertEquals(expected.toList(), toList())
 }
 
-class LineSequenceTest : FunSpec() {
-    init {
-        test("empty") {
-            "".lineSequence().shouldContain()
-        }
-
-        test("one line, no newline") {
-            "foo".lineSequence().shouldContain("foo")
-        }
-
-        test("one line, with newline") {
-            "foo\n".lineSequence().shouldContain("foo\n")
-        }
-
-        test("multi-line, no trailing newline") {
-            "foo\nbar\nbaz".lineSequence().shouldContain("foo\n", "bar\n", "baz")
-        }
-
-        test("multi-line, trailing newline") {
-            "foo\nbar\nbaz\n".lineSequence().shouldContain("foo\n", "bar\n", "baz\n")
-        }
-        test("empty") {
-            "".lineSequence().shouldContain()
-        }
-
-        test("one line, no newline") {
-            "foo".lineSequence().shouldContain("foo")
-        }
-
-        test("one line, with newline") {
-            "foo\n".lineSequence().shouldContain("foo\n")
-        }
-
-        test("multi-line, no trailing newline") {
-            "foo\nbar\nbaz".lineSequence().shouldContain("foo\n", "bar\n", "baz")
-        }
-
-        test("multi-line, trailing newline") {
-            "foo\nbar\nbaz\n".lineSequence().shouldContain("foo\n", "bar\n", "baz\n")
-        }
-
-        test("can iterate multiple times") {
-            val lineSequence = "foo\nbar\nbaz\n".lineSequence()
-            lineSequence.shouldContain("foo\n", "bar\n", "baz\n")
-            lineSequence.shouldContain("foo\n", "bar\n", "baz\n")
-        }
-    }
-}
-
 class CodepointSequenceTest : FunSpec() {
     init {
         test("empty") {

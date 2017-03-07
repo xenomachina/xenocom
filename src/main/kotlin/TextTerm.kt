@@ -20,7 +20,6 @@ package com.xenomachina.text.term
 
 import com.xenomachina.text.clear
 import com.xenomachina.text.codePointSequence
-import com.xenomachina.text.lineSequence
 import com.xenomachina.text.trimNewline
 
 internal const val SPACE_WIDTH = 1
@@ -157,7 +156,13 @@ fun columnize(vararg s: String, minWidths: IntArray? = null): String {
     }
     val height = columns.maxBy { it.size }?.size ?: 0
     val sb = StringBuilder()
+    var firstLine = true
     for (j in 0..height - 1) {
+        if (firstLine) {
+            firstLine = false
+        } else {
+            sb.append("\n")
+        }
         var lineWidth = 0
         var columnStart = 0
         for (i in 0..columns.size - 1) {
@@ -169,7 +174,6 @@ fun columnize(vararg s: String, minWidths: IntArray? = null): String {
             }
             columnStart += widths[i]
         }
-        sb.append("\n")
     }
     return sb.toString()
 }

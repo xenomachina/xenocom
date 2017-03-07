@@ -154,27 +154,27 @@ class CodePointWidthTest : FunSpec() {
 class ColumnizeTest : FunSpec() {
     init {
         test("first column shorter, no minWidths") {
-            assertEquals("foobar\n   baz\n", columnize("foo\n", "bar\nbaz\n"))
+            assertEquals("foobar\n   baz", columnize("foo", "bar\nbaz"))
         }
 
         test("second column shorter, no minWidths") {
-            assertEquals("barfoo\nbaz\n", columnize("bar\nbaz\n", "foo\n"))
+            assertEquals("barfoo\nbaz", columnize("bar\nbaz", "foo"))
         }
 
         test("first column shorter, with large minWidths") {
-            assertEquals("foo  bar\n     baz\n", columnize("foo\n", "bar\nbaz\n", minWidths = intArrayOf(5, 10)))
+            assertEquals("foo  bar\n     baz", columnize("foo", "bar\nbaz", minWidths = intArrayOf(5, 10)))
         }
 
         test("second column shorter, with large minWidths") {
-            assertEquals("bar  foo\nbaz\n", columnize("bar\nbaz\n", "foo\n", minWidths = intArrayOf(5, 10)))
+            assertEquals("bar  foo\nbaz", columnize("bar\nbaz", "foo", minWidths = intArrayOf(5, 10)))
         }
 
         test("first column shorter, with small minWidths") {
-            assertEquals("foobar\n   baz\n", columnize("foo\n", "bar\nbaz\n", minWidths = intArrayOf(2, 2)))
+            assertEquals("foobar\n   baz", columnize("foo", "bar\nbaz", minWidths = intArrayOf(2, 2)))
         }
 
         test("second column shorter, with small minWidths") {
-            assertEquals("barfoo\nbaz\n", columnize("bar\nbaz\n", "foo\n", minWidths = intArrayOf(2, 2)))
+            assertEquals("barfoo\nbaz", columnize("bar\nbaz", "foo", minWidths = intArrayOf(2, 2)))
         }
     }
 }
