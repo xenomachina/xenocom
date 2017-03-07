@@ -241,5 +241,32 @@ class CodePointWidthTest : FunSpec() {
     }
 }
 
-// TODO: test String.trimNewline
+class TrimNewlineTest : FunSpec() {
+    init {
+        test("empty") {
+            assertEquals("", "".trimNewline())
+        }
+
+        test("just newline") {
+            assertEquals("", "\n".trimNewline())
+        }
+
+        test("no newline") {
+            assertEquals("hello world", "hello world".trimNewline())
+        }
+
+        test("text + newline") {
+            assertEquals("goodbye earth", "goodbye earth\n".trimNewline())
+        }
+
+        test("only last newline is removed") {
+            assertEquals("what's up moon\n\n", "what's up moon\n\n\n".trimNewline())
+        }
+
+        test("only newline at end is removed") {
+            assertEquals("so long\nsaturn", "so long\nsaturn".trimNewline())
+        }
+    }
+}
+
 // TODO: test columnize
