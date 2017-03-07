@@ -198,7 +198,48 @@ class String_WrapTextTest : FunSpec() {
     }
 }
 
-// TODO: test codePointWidth
-// TODO: test String.codePointWidth
+class CodePointWidthTest : FunSpec() {
+    init {
+        test("nulchar == 0") {
+            assertEquals(0, codePointWidth(0))
+        }
+
+        test("control characters == -1") {
+            for (i in 1..(' '.toInt() - 1)) {
+                assertEquals("[$i]", -1, codePointWidth(i))
+            }
+        }
+
+        test("assorted single-width characters") {
+            assertEquals(1, codePointWidth(' '.toInt()))
+            assertEquals(1, codePointWidth('M'.toInt()))
+            assertEquals(1, codePointWidth('π'.toInt()))
+            assertEquals(1, codePointWidth('ʖ'.toInt()))
+        }
+
+        test("assorted double-width characters") {
+            assertEquals(2, codePointWidth('好'.toInt()))
+            assertEquals(2, codePointWidth('Ｍ'.toInt()))
+        }
+
+        test("assorted non-BMP characters and Emoji") {
+            assertEquals(1, codePointWidth(0x1f01c)) // Mahjong tile four of circles
+
+            // TODO: Should some Emoji return 2?
+            assertEquals(1, codePointWidth(0x1f601)) // Emoticons
+            assertEquals(1, codePointWidth(0x2702)) // Dingbats
+            assertEquals(1, codePointWidth(0x1f680)) // Transport & Map
+            assertEquals(1, codePointWidth(0x24c2)) // Enclosed
+            assertEquals(1, codePointWidth(0x1f170)) // Enclosed
+        }
+
+        test("string containing a few printing characters") {
+            assertEquals(5, "hello".codePointWidth()) // Mahjong tile four of circles
+            assertEquals(12, "hello = 你好".codePointWidth()) // Mahjong tile four of circles
+            // TODO: decide how control characters should be handled
+        }
+    }
+}
+
 // TODO: test String.trimNewline
 // TODO: test columnize
