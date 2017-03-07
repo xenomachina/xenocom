@@ -202,7 +202,7 @@ publishing {
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', project.description)
-                root.appendNode('name', project.ext.prettyName)
+                root.appendNode('name', project.name)
                 root.appendNode('url', project.ext.vcsUrl)
                 root.children().last() + pomConfig
             }
