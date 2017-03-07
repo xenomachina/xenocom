@@ -1,4 +1,4 @@
-# xenocom -- Xenomachina's "Common" stuff
+# xenocom -- Xenomachina's "Common" stuff for Kotlin
 
 [![Download](https://api.bintray.com/packages/xenomachina/maven/xenocom/images/download.svg) ](https://bintray.com/xenomachina/maven/xenocom/%5FlatestVersion)
 [![Build Status](https://travis-ci.org/xenomachina/xenocom.svg?branch=master)](https://travis-ci.org/xenomachina/xenocom)
@@ -11,5 +11,6 @@ need them.
 
 Packages include:
 
-- com.xenomachina.common — Stuff so general it doesn't belong anywhere else.
-- com.xenomachina.text — Sting and general text handling.
+- com.xenomachina.common — Things so general they don't belong anywhere else.
+- com.xenomachina.text — String and general text handling.
+- com.xenomachina.text.term — Text handling focused on formatting monospaced plaintext, like in a terminal.
