@@ -269,4 +269,30 @@ class TrimNewlineTest : FunSpec() {
     }
 }
 
-// TODO: test columnize
+class ColumnizeTest : FunSpec() {
+    init {
+        test("first column shorter, no minWidths") {
+            assertEquals("foobar\n   baz\n", columnize("foo\n", "bar\nbaz\n"))
+        }
+
+        test("second column shorter, no minWidths") {
+            assertEquals("barfoo\nbaz\n", columnize("bar\nbaz\n", "foo\n"))
+        }
+
+        test("first column shorter, with large minWidths") {
+            assertEquals("foo  bar\n     baz\n", columnize("foo\n", "bar\nbaz\n", minWidths = intArrayOf(5, 10)))
+        }
+
+        test("second column shorter, with large minWidths") {
+            assertEquals("bar  foo\nbaz\n", columnize("bar\nbaz\n", "foo\n", minWidths = intArrayOf(5, 10)))
+        }
+
+        test("first column shorter, with small minWidths") {
+            assertEquals("foobar\n   baz\n", columnize("foo\n", "bar\nbaz\n", minWidths = intArrayOf(2, 2)))
+        }
+
+        test("second column shorter, with small minWidths") {
+            assertEquals("barfoo\nbaz\n", columnize("bar\nbaz\n", "foo\n", minWidths = intArrayOf(2, 2)))
+        }
+    }
+}
