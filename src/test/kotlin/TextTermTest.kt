@@ -24,35 +24,35 @@ import org.junit.Assert.assertEquals
 class StringPadToTest : FunSpec() {
     init {
         test("empty") {
-            assertEquals("          ", "".padTo(10))
+            assertEquals("          ", "".padLinesToWidth(10))
         }
 
         test("one small line") {
-            assertEquals("abc       ", "abc".padTo(10))
+            assertEquals("abc       ", "abc".padLinesToWidth(10))
         }
 
         test("one large line") {
-            assertEquals("0123456789abcde", "0123456789abcde".padTo(10))
+            assertEquals("0123456789abcde", "0123456789abcde".padLinesToWidth(10))
         }
 
         test("one small line with newline") {
-            assertEquals("abc       \n", "abc\n".padTo(10))
+            assertEquals("abc       \n", "abc\n".padLinesToWidth(10))
         }
 
         test("one large line with newline") {
-            assertEquals("0123456789abcde\n", "0123456789abcde\n".padTo(10))
+            assertEquals("0123456789abcde\n", "0123456789abcde\n".padLinesToWidth(10))
         }
 
         test("multiline") {
             assertEquals(
                     "abc       \nde fg     \n0123456789xyz\nfoo       \n",
-                    "abc\nde fg\n0123456789xyz\nfoo\n".padTo(10))
+                    "abc\nde fg\n0123456789xyz\nfoo\n".padLinesToWidth(10))
         }
 
         test("multiline without trailing newline") {
             assertEquals(
                     "abc       \nde fg     \n0123456789xyz\nfoo       ",
-                    "abc\nde fg\n0123456789xyz\nfoo".padTo(10))
+                    "abc\nde fg\n0123456789xyz\nfoo".padLinesToWidth(10))
         }
     }
 }

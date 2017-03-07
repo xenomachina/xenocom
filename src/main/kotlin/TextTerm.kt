@@ -25,8 +25,7 @@ import com.xenomachina.text.trimNewline
 
 internal const val SPACE_WIDTH = 1
 
-// TODO: rename to padLinesToWidth
-fun String.padTo(width: Int): String {
+fun String.padLinesToWidth(width: Int): String {
     val sb = StringBuilder()
     var lineWidth = 0
     var singleLine = true
@@ -150,8 +149,7 @@ fun columnize(vararg s: String, minWidths: IntArray? = null): String {
         for (line in s[i].lineSequence()) {
             val cell = line.trimNewline()
             columns[i].add(cell)
-            // TODO: use maxOf
-            widths[i] = widths[i].coerceAtLeast(cell.codePointWidth())
+            widths[i] = maxOf(widths[i], cell.codePointWidth())
         }
     }
     val height = columns.maxBy { it.size }?.size ?: 0
