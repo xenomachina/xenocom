@@ -147,7 +147,57 @@ class StringPadToTest : FunSpec() {
     }
 }
 
-// TODO: test String.wrapText
+class String_WrapTextTest : FunSpec() {
+    init {
+        test("empty") {
+            assertEquals("", "".wrapText(10))
+        }
+
+        test("simple") {
+            assertEquals("hello", "hello".wrapText(10))
+        }
+
+        test("multi-spaces are smushed") {
+            assertEquals("foo bar", "foo  bar".wrapText(10))
+        }
+
+        test("leading-spaces are removed") {
+            assertEquals("foo bar", " foo bar".wrapText(10))
+            assertEquals("foo bar", "  foo bar".wrapText(10))
+        }
+
+        test("trailing-spaces are removed") {
+            assertEquals("foo bar", "foo bar ".wrapText(10))
+            assertEquals("foo bar", "foo bar  ".wrapText(10))
+        }
+
+        test("words are wrapped") {
+            assertEquals(
+                    "foo bar\nbaz quux\nzarf",
+                    "foo bar baz quux zarf".wrapText(10))
+        }
+
+        test("words are wrapped at exactly the wrap margin") {
+            assertEquals(
+                    "foo bar ba\nz quux\nzarf",
+                    "foo bar ba z quux zarf".wrapText(10))
+        }
+
+        test("extra spaces don't push past wrap margin") {
+            assertEquals(
+                    "12 45 78 0\naa bb cc\ndd",
+                    "12  45  78  0  aa  bb  cc  dd".wrapText(10))
+        }
+
+        test("double-width chars take up double space") {
+            // if we treated 你好 as having a width of 2 then 'hi' would end up on first line.
+            assertEquals(
+                    "你好 is\n'hi' in\nChinese",
+                    "你好 is 'hi' in Chinese".wrapText(10))
+        }
+    }
+}
+
 // TODO: test codePointWidth
 // TODO: test String.codePointWidth
 // TODO: test String.trimNewline
