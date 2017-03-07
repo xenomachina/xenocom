@@ -56,8 +56,10 @@ internal const val SPACE_WIDTH = 1
 fun String.padTo(width: Int): String {
     val sb = StringBuilder()
     var lineWidth = 0
+    var singleLine = true
     for (codePoint in codePointSequence()) {
         if (codePoint == '\n'.toInt()) {
+            singleLine = false
             while (lineWidth < width) {
                 sb.append(" ")
                 lineWidth += SPACE_WIDTH
@@ -67,6 +69,12 @@ fun String.padTo(width: Int): String {
         } else {
             sb.appendCodePoint(codePoint)
             lineWidth += codePointWidth(codePoint)
+        }
+    }
+    if (singleLine || lineWidth > 0) {
+        while (lineWidth < width) {
+            sb.append(" ")
+            lineWidth += SPACE_WIDTH
         }
     }
     return sb.toString()
