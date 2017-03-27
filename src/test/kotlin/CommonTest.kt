@@ -18,33 +18,38 @@
 
 package com.xenomachina.common
 
+import io.kotlintest.matchers.Matcher
+import io.kotlintest.matchers.Result
+import io.kotlintest.matchers.should
+import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertNotNull
+
+fun beNonNull(): Matcher<Any?> = object : Matcher<Any?> {
+    override fun test(value: Any?) = Result(value !== null, "$value should be non-null")
+}
 
 class CommonTest : FunSpec() {
     init {
         var holder : Holder<String?>?
         test("null") {
             holder = null
-            assertNull(holder)
-            assertNull(holder.orElse { null })
-            assertEquals("fallback", holder.orElse { "fallback" })
+            holder shouldBe null
+            holder.orElse { null } shouldBe null
+            holder.orElse { "fallback" } shouldBe "fallback"
         }
 
         test("Holder(null)") {
             holder = Holder(null)
-            assertNotNull(holder)
-            assertNull(holder.orElse { null })
-            assertNull(holder.orElse { "fallback" })
+            holder should beNonNull()
+            holder.orElse { null } shouldBe null
+            holder.orElse { "fallback" } shouldBe null
         }
 
         test("Holder(nonNull)") {
             holder = Holder("value")
-            assertNotNull(holder)
-            assertEquals("value", holder.orElse { null })
-            assertEquals("value", holder.orElse { "fallback" })
+            holder should beNonNull()
+            holder.orElse { null } shouldBe "value"
+            holder.orElse { "fallback" } shouldBe "value"
         }
     }
 }

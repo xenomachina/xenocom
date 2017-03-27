@@ -18,11 +18,12 @@
 
 package com.xenomachina.text
 
+import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
-import org.junit.Assert.assertEquals
 
+// TODO does kotlintest have a matcher for this?
 internal fun <T> Sequence<T>.shouldContain(vararg expected: T) {
-    assertEquals(expected.toList(), toList())
+    toList() shouldBe expected.toList()
 }
 
 class CodepointSequenceTest : FunSpec() {
@@ -50,14 +51,14 @@ class StringBuilderClearTest : FunSpec() {
         test("empty") {
             val sb = StringBuilder()
             sb.clear()
-            assertEquals("", sb.toString())
+            sb.toString() shouldBe ""
         }
 
         test("non-empty") {
             val sb = StringBuilder()
             sb.append("hello")
             sb.clear()
-            assertEquals("", sb.toString())
+            sb.toString() shouldBe ""
         }
     }
 }
@@ -65,27 +66,27 @@ class StringBuilderClearTest : FunSpec() {
 class TrimNewlineTest : FunSpec() {
     init {
         test("empty") {
-            assertEquals("", "".trimNewline())
+            "".trimNewline() shouldBe ""
         }
 
         test("just newline") {
-            assertEquals("", "\n".trimNewline())
+            "\n".trimNewline() shouldBe ""
         }
 
         test("no newline") {
-            assertEquals("hello world", "hello world".trimNewline())
+            "hello world".trimNewline() shouldBe "hello world"
         }
 
         test("text + newline") {
-            assertEquals("goodbye earth", "goodbye earth\n".trimNewline())
+            "goodbye earth\n".trimNewline() shouldBe "goodbye earth"
         }
 
         test("only last newline is removed") {
-            assertEquals("what's up moon\n\n", "what's up moon\n\n\n".trimNewline())
+            "what's up moon\n\n\n".trimNewline() shouldBe "what's up moon\n\n"
         }
 
         test("only newline at end is removed") {
-            assertEquals("so long\nsaturn", "so long\nsaturn".trimNewline())
+            "so long\nsaturn".trimNewline() shouldBe "so long\nsaturn"
         }
     }
 }

@@ -18,41 +18,39 @@
 
 package com.xenomachina.text.term
 
+import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
-import org.junit.Assert.assertEquals
 
 class StringPadToTest : FunSpec() {
     init {
         test("empty") {
-            assertEquals("          ", "".padLinesToWidth(10))
+            "".padLinesToWidth(10) shouldBe "          "
         }
 
         test("one small line") {
-            assertEquals("abc       ", "abc".padLinesToWidth(10))
+            "abc".padLinesToWidth(10) shouldBe "abc       "
         }
 
         test("one large line") {
-            assertEquals("0123456789abcde", "0123456789abcde".padLinesToWidth(10))
+            "0123456789abcde".padLinesToWidth(10) shouldBe "0123456789abcde"
         }
 
         test("one small line with newline") {
-            assertEquals("abc       \n", "abc\n".padLinesToWidth(10))
+            "abc\n".padLinesToWidth(10) shouldBe "abc       \n"
         }
 
         test("one large line with newline") {
-            assertEquals("0123456789abcde\n", "0123456789abcde\n".padLinesToWidth(10))
+            "0123456789abcde\n".padLinesToWidth(10) shouldBe "0123456789abcde\n"
         }
 
         test("multiline") {
-            assertEquals(
-                    "abc       \nde fg     \n0123456789xyz\nfoo       \n",
-                    "abc\nde fg\n0123456789xyz\nfoo\n".padLinesToWidth(10))
+            "abc\nde fg\n0123456789xyz\nfoo\n".padLinesToWidth(10) shouldBe
+                    "abc       \nde fg     \n0123456789xyz\nfoo       \n"
         }
 
         test("multiline without trailing newline") {
-            assertEquals(
-                    "abc       \nde fg     \n0123456789xyz\nfoo       ",
-                    "abc\nde fg\n0123456789xyz\nfoo".padLinesToWidth(10))
+            "abc\nde fg\n0123456789xyz\nfoo".padLinesToWidth(10) shouldBe
+                    "abc       \nde fg     \n0123456789xyz\nfoo       "
         }
     }
 }
@@ -60,50 +58,46 @@ class StringPadToTest : FunSpec() {
 class String_WrapTextTest : FunSpec() {
     init {
         test("empty") {
-            assertEquals("", "".wrapText(10))
+            "".wrapText(10) shouldBe ""
         }
 
         test("simple") {
-            assertEquals("hello", "hello".wrapText(10))
+            "hello".wrapText(10) shouldBe "hello"
         }
 
         test("multi-spaces are smushed") {
-            assertEquals("foo bar", "foo  bar".wrapText(10))
+            "foo  bar".wrapText(10) shouldBe "foo bar"
         }
 
         test("leading-spaces are removed") {
-            assertEquals("foo bar", " foo bar".wrapText(10))
-            assertEquals("foo bar", "  foo bar".wrapText(10))
+            " foo bar".wrapText(10) shouldBe "foo bar"
+            "  foo bar".wrapText(10) shouldBe "foo bar"
         }
 
         test("trailing-spaces are removed") {
-            assertEquals("foo bar", "foo bar ".wrapText(10))
-            assertEquals("foo bar", "foo bar  ".wrapText(10))
+            "foo bar ".wrapText(10) shouldBe "foo bar"
+            "foo bar  ".wrapText(10) shouldBe "foo bar"
         }
 
         test("words are wrapped") {
-            assertEquals(
-                    "foo bar\nbaz quux\nzarf",
-                    "foo bar baz quux zarf".wrapText(10))
+            "foo bar baz quux zarf".wrapText(10) shouldBe
+            "foo bar\nbaz quux\nzarf"
         }
 
         test("words are wrapped at exactly the wrap margin") {
-            assertEquals(
-                    "foo bar ba\nz quux\nzarf",
-                    "foo bar ba z quux zarf".wrapText(10))
+            "foo bar ba z quux zarf".wrapText(10) shouldBe
+            "foo bar ba\nz quux\nzarf"
         }
 
         test("extra spaces don't push past wrap margin") {
-            assertEquals(
-                    "12 45 78 0\naa bb cc\ndd",
-                    "12  45  78  0  aa  bb  cc  dd".wrapText(10))
+            "12  45  78  0  aa  bb  cc  dd".wrapText(10) shouldBe
+            "12 45 78 0\naa bb cc\ndd"
         }
 
         test("double-width chars take up double space") {
             // if we treated 你好 as having a width of 2 then 'hi' would end up on first line.
-            assertEquals(
-                    "你好 is\n'hi' in\nChinese",
-                    "你好 is 'hi' in Chinese".wrapText(10))
+            "你好 is 'hi' in Chinese".wrapText(10) shouldBe
+            "你好 is\n'hi' in\nChinese"
         }
     }
 }
@@ -111,41 +105,42 @@ class String_WrapTextTest : FunSpec() {
 class CodePointWidthTest : FunSpec() {
     init {
         test("nulchar == 0") {
-            assertEquals(0, codePointWidth(0))
+            codePointWidth(0) shouldBe 0
         }
 
         test("control characters == -1") {
             for (i in 1..(' '.toInt() - 1)) {
-                assertEquals("[$i]", -1, codePointWidth(i))
+                // TODO: is there a way to add messaging to shouldBe?
+                codePointWidth(i) shouldBe -1
             }
         }
 
         test("assorted single-width characters") {
-            assertEquals(1, codePointWidth(' '.toInt()))
-            assertEquals(1, codePointWidth('M'.toInt()))
-            assertEquals(1, codePointWidth('π'.toInt()))
-            assertEquals(1, codePointWidth('ʖ'.toInt()))
+            codePointWidth(' '.toInt()) shouldBe 1
+            codePointWidth('M'.toInt()) shouldBe 1
+            codePointWidth('π'.toInt()) shouldBe 1
+            codePointWidth('ʖ'.toInt()) shouldBe 1
         }
 
         test("assorted double-width characters") {
-            assertEquals(2, codePointWidth('好'.toInt()))
-            assertEquals(2, codePointWidth('Ｍ'.toInt()))
+            codePointWidth('好'.toInt()) shouldBe 2
+            codePointWidth('Ｍ'.toInt()) shouldBe 2
         }
 
         test("assorted non-BMP characters and Emoji") {
-            assertEquals(1, codePointWidth(0x1f01c)) // Mahjong tile four of circles
+            codePointWidth(0x1f01c) shouldBe 1
 
             // TODO: Should some Emoji return 2?
-            assertEquals(1, codePointWidth(0x1f601)) // Emoticons
-            assertEquals(1, codePointWidth(0x2702)) // Dingbats
-            assertEquals(1, codePointWidth(0x1f680)) // Transport & Map
-            assertEquals(1, codePointWidth(0x24c2)) // Enclosed
-            assertEquals(1, codePointWidth(0x1f170)) // Enclosed
+            codePointWidth(0x1f601) shouldBe 1
+            codePointWidth(0x2702) shouldBe 1
+            codePointWidth(0x1f680) shouldBe 1
+            codePointWidth(0x24c2) shouldBe 1
+            codePointWidth(0x1f170) shouldBe 1
         }
 
         test("string containing a few printing characters") {
-            assertEquals(5, "hello".codePointWidth()) // Mahjong tile four of circles
-            assertEquals(12, "hello = 你好".codePointWidth()) // Mahjong tile four of circles
+            "hello".codePointWidth() shouldBe 5
+            "hello = 你好".codePointWidth() shouldBe 12
             // TODO: decide how control characters should be handled
         }
     }
@@ -154,27 +149,27 @@ class CodePointWidthTest : FunSpec() {
 class ColumnizeTest : FunSpec() {
     init {
         test("first column shorter, no minWidths") {
-            assertEquals("foobar\n   baz", columnize("foo", "bar\nbaz"))
+            columnize("foo", "bar\nbaz") shouldBe "foobar\n   baz"
         }
 
         test("second column shorter, no minWidths") {
-            assertEquals("barfoo\nbaz", columnize("bar\nbaz", "foo"))
+            columnize("bar\nbaz", "foo") shouldBe "barfoo\nbaz"
         }
 
         test("first column shorter, with large minWidths") {
-            assertEquals("foo  bar\n     baz", columnize("foo", "bar\nbaz", minWidths = intArrayOf(5, 10)))
+            columnize("foo", "bar\nbaz", minWidths = intArrayOf(5, 10)) shouldBe "foo  bar\n     baz"
         }
 
         test("second column shorter, with large minWidths") {
-            assertEquals("bar  foo\nbaz", columnize("bar\nbaz", "foo", minWidths = intArrayOf(5, 10)))
+            columnize("bar\nbaz", "foo", minWidths = intArrayOf(5, 10)) shouldBe "bar  foo\nbaz"
         }
 
         test("first column shorter, with small minWidths") {
-            assertEquals("foobar\n   baz", columnize("foo", "bar\nbaz", minWidths = intArrayOf(2, 2)))
+            columnize("foo", "bar\nbaz", minWidths = intArrayOf(2, 2)) shouldBe "foobar\n   baz"
         }
 
         test("second column shorter, with small minWidths") {
-            assertEquals("barfoo\nbaz", columnize("bar\nbaz", "foo", minWidths = intArrayOf(2, 2)))
+            columnize("bar\nbaz", "foo", minWidths = intArrayOf(2, 2)) shouldBe "barfoo\nbaz"
         }
     }
 }
