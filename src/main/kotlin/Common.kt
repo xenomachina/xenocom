@@ -24,7 +24,7 @@ package com.xenomachina.common
  *
  * @property value the value being held
  */
-data class Holder<T>(val value: T)
+data class Holder<out T>(val value: T)
 
 /**
  * Dereferences the [Holder] if non-null, otherwise returns the result of calling [fallback].

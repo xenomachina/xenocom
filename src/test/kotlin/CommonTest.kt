@@ -23,10 +23,15 @@ import io.kotlintest.matchers.Result
 import io.kotlintest.matchers.should
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FunSpec
+import org.junit.Assert.assertNotNull
 
 fun beNonNull(): Matcher<Any?> = object : Matcher<Any?> {
     override fun test(value: Any?) = Result(value !== null, "$value should be non-null")
 }
+
+open class Super {}
+
+class Base : Super() {}
 
 class CommonTest : FunSpec() {
     init {
@@ -50,6 +55,16 @@ class CommonTest : FunSpec() {
             holder should beNonNull()
             holder.orElse { null } shouldBe "value"
             holder.orElse { "fallback" } shouldBe "value"
+        }
+
+        test("variance") {
+            val h1 = Holder(Super())
+            val s1 = h1.orElse { Base() }
+            assertNotNull(s1)
+
+            val h2 = Holder(Base())
+            val s2 = h2.orElse { Super() }
+            assertNotNull(s2)
         }
     }
 }
