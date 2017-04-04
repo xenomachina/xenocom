@@ -1,3 +1,7 @@
+### 0.0.4
+
+    Fix variance of Holder: <out T>, not <T>
+
 ### 0.0.3
 
     - Misc. tiny improvements:
