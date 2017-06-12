@@ -37,8 +37,6 @@ apply plugin: 'java'
 apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'maven-publish'
 
-kotlin { experimental { coroutines 'enable' } }
-
 assert name == 'xenocom'
 description = "Xenomachina's common support library."
 

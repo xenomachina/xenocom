@@ -18,20 +18,30 @@
 
 package com.xenomachina.text
 
-import kotlin.coroutines.experimental.buildSequence
-
 const val NBSP_CODEPOINT = 0xa0
 
 /**
  * Produces a [Sequence] of the Unicode code points in the given [String].
  */
-fun String.codePointSequence() : Sequence<Int> = buildSequence {
-    val length = length
-    var offset = 0
-    while (offset < length) {
-        val codePoint = codePointAt(offset)
-        yield(codePoint)
-        offset += Character.charCount(codePoint)
+fun String.codePointSequence() : Sequence<Int> = object : Sequence<Int> {
+    private val length = this@codePointSequence.length
+
+    override fun iterator() = object : Iterator<Int> {
+        private var offset = 0
+
+        override fun hasNext(): Boolean {
+            return offset < length
+        }
+
+        override fun next(): Int {
+            if (offset < length) {
+                val codePoint = codePointAt(offset)
+                offset += Character.charCount(codePoint)
+                return codePoint
+            } else {
+                throw NoSuchElementException()
+            }
+        }
     }
 }
 
