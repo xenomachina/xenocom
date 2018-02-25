@@ -99,6 +99,54 @@ class String_WrapTextTest : FunSpec() {
             "你好 is 'hi' in Chinese".wrapText(10) shouldBe
             "你好 is\n'hi' in\nChinese"
         }
+
+        test("single new-line character is treated as space") {
+            "1...\n2...".wrapText(10) shouldBe
+            "1... 2..."
+        }
+
+        test("multiple new-line characters are treated as markdown paragraphs") {
+            "1...\n\n2...".wrapText(10) shouldBe
+            "1...\n\n2..."
+        }
+
+        test("non-successive new-line characters are treated as markdown paragraphs") {
+            "1...\n   \n 2...".wrapText(10) shouldBe
+            "1...\n\n2..."
+        }
+
+        test("leading multiple new-line characters are removed") {
+            "\n\n1... 2...".wrapText(10) shouldBe
+            "1... 2..."
+        }
+
+        test("trailing multiple new-line characters are removed") {
+            "1... 2...\n\n".wrapText(10) shouldBe
+            "1... 2..."
+        }
+
+        test("mix of multiple new-line characters and spaces should be treated as 'markdown paragraphs' (escaped string version)") {
+            "1...\n2...\n\n \n  \n\n    \n Hello world!".wrapText(10) shouldBe
+            "1... 2...\n\nHello\nworld!"
+        }
+
+        test("mix of multiple new-line characters and spaces should be treated as 'markdown paragraphs' (raw string version)") {
+            """
+                1...
+                2...
+
+
+
+                 Hello world!
+                """.trimStart()
+                    .wrapText(10) shouldBe
+            """
+                1... 2...
+
+                Hello
+                world!
+                """.trimIndent()
+        }
     }
 }
 

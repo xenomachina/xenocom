@@ -19,6 +19,7 @@
 package com.xenomachina.text
 
 const val NBSP_CODEPOINT = 0xa0
+const val LINE_FEED_CODEPOINT = 0x0a
 
 /**
  * Produces a [Sequence] of the Unicode code points in the given [String].
