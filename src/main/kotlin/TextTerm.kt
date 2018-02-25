@@ -18,6 +18,7 @@
 
 package com.xenomachina.text.term
 
+import com.xenomachina.text.LINE_FEED_CODEPOINT
 import com.xenomachina.text.NBSP_CODEPOINT
 import com.xenomachina.text.clear
 import com.xenomachina.text.codePointSequence
@@ -53,49 +54,97 @@ fun String.padLinesToWidth(width: Int): String {
 }
 
 fun String.wrapText(maxWidth: Int): String {
-    val sb = StringBuilder()
-    val word = StringBuilder()
-    var lineWidth = 0
-    var wordWidth = 0
-    fun handleSpace() {
+    val textWrapper = TextWrapper(maxWidth)
+    for (inputCodePoint in codePointSequence()) {
+        textWrapper.addCodePoint(inputCodePoint)
+    }
+    return textWrapper.get()
+}
+
+internal class TextWrapper(private val maxWidth: Int) {
+    private val sb = StringBuilder()
+    private val word = StringBuilder()
+    private var lineWidth = 0
+    private var wordWidth = 0
+    private var newLinesSinceLastWord = 0
+
+    fun addCodePoint(inputCodePoint: Int) {
+        if (Character.isSpaceChar(inputCodePoint) && inputCodePoint != NBSP_CODEPOINT) {
+            // space
+            handleSpace()
+        } else if (inputCodePoint == LINE_FEED_CODEPOINT) {
+            // line feed
+            handleLineFeed()
+        } else {
+            // non-space
+            handleNonSpace(inputCodePoint)
+        }
+    }
+
+    fun get(): String {
+        handleSpace()
+        return sb.toString()
+    }
+
+    private fun handleSpace() {
         if (wordWidth > 0) {
             if (lineWidth > 0) {
-                sb.append(" ")
-                lineWidth += SPACE_WIDTH
+                applyWordSeparator()
             }
             sb.append(word)
             lineWidth += wordWidth
             word.clear()
             wordWidth = 0
+            newLinesSinceLastWord = 0
         }
     }
-    for (inputCodePoint in codePointSequence()) {
-        if (Character.isSpaceChar(inputCodePoint) && inputCodePoint != NBSP_CODEPOINT) {
-            // space
-            handleSpace()
-        } else {
-            // non-space
-            val outputCodePoint = if (inputCodePoint == NBSP_CODEPOINT) ' '.toInt() else inputCodePoint
-            val charWidth = codePointWidth(outputCodePoint).toInt()
-            if (lineWidth > 0 && lineWidth + SPACE_WIDTH + wordWidth + charWidth > maxWidth) {
-                sb.append("\n")
-                lineWidth = 0
-            }
-            if (lineWidth == 0 && lineWidth + SPACE_WIDTH + wordWidth + charWidth > maxWidth) {
-                // Eep! Word would be longer than line. Need to break it.
-                sb.append(word)
-                word.clear()
-                wordWidth = 0
-                sb.append("\n")
-                lineWidth = 0
-            }
-            word.appendCodePoint(outputCodePoint)
-            wordWidth += charWidth
-        }
-    }
-    handleSpace()
 
-    return sb.toString()
+    private fun handleLineFeed() {
+        handleSpace()
+        if (lineWidth > 0) {
+            newLinesSinceLastWord++
+        }
+    }
+
+    private fun handleNonSpace(inputCodePoint: Int) {
+        val outputCodePoint = if (inputCodePoint == NBSP_CODEPOINT) ' '.toInt() else inputCodePoint
+        val charWidth = codePointWidth(outputCodePoint)
+        if (lineWidth > 0 && lineWidth + SPACE_WIDTH + wordWidth + charWidth > maxWidth) {
+            goToNewLine()
+        }
+        if (lineWidth == 0 && lineWidth + SPACE_WIDTH + wordWidth + charWidth > maxWidth) {
+            // Eep! Word would be longer than line. Need to break it.
+            sb.append(word)
+            word.clear()
+            wordWidth = 0
+            sb.append("\n")
+            lineWidth = 0
+        }
+        word.appendCodePoint(outputCodePoint)
+        wordWidth += charWidth
+    }
+
+    private fun isNewParagraphRequired() = newLinesSinceLastWord > 1
+
+    private fun applyWordSeparator() {
+        if (isNewParagraphRequired()) {
+            sb.append("\n\n")
+            lineWidth = 0
+        } else {
+            sb.append(" ")
+            lineWidth += SPACE_WIDTH
+        }
+    }
+
+    private fun goToNewLine() {
+        if (isNewParagraphRequired()) {
+            sb.append("\n\n")
+        } else {
+            sb.append("\n")
+        }
+        lineWidth = 0
+        newLinesSinceLastWord = 0
+    }
 }
 
 /**
