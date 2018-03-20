@@ -29,13 +29,13 @@ fun beNonNull(): Matcher<Any?> = object : Matcher<Any?> {
     override fun test(value: Any?) = Result(value !== null, "$value should be non-null")
 }
 
-open class Super {}
+open class Super
 
-class Base : Super() {}
+class Base : Super()
 
 class CommonTest : FunSpec() {
     init {
-        var holder : Holder<String?>?
+        var holder: Holder<String?>?
         test("null") {
             holder = null
             holder shouldBe null

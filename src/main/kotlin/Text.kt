@@ -23,7 +23,7 @@ const val NBSP_CODEPOINT = 0xa0
 /**
  * Produces a [Sequence] of the Unicode code points in the given [String].
  */
-fun String.codePointSequence() : Sequence<Int> = object : Sequence<Int> {
+fun String.codePointSequence(): Sequence<Int> = object : Sequence<Int> {
     private val length = this@codePointSequence.length
 
     override fun iterator() = object : Iterator<Int> {
@@ -56,4 +56,3 @@ fun String.trimNewline(): String {
         return this
     }
 }
-
