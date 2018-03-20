@@ -105,10 +105,6 @@ task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
     from javadoc.destinationDir
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Maven Central upload
-//////////////////////////////////////////////////////////////////////////////
-
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -118,67 +114,72 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    useGpgCmd()
-    sign configurations.archives
-}
+if (System.env.CI != "true") {
+    signing {
+        useGpgCmd()
+        sign configurations.archives
+    }
 
-def ossrhUsernameOrEmpty = hasProperty('ossrhUsername') ? ossrhUsername : ''
-def ossrhPasswordOrEmpty = hasProperty('ossrhPassword') ? ossrhPassword : ''
+    def ossrhUsernameOrEmpty = hasProperty('ossrhUsername') ? ossrhUsername : ''
+    def ossrhPasswordOrEmpty = hasProperty('ossrhPassword') ? ossrhPassword : ''
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    //////////////////////////////////////////////////////////////////////////////
+    // Maven Central upload
+    //////////////////////////////////////////////////////////////////////////////
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsernameOrEmpty, password: ossrhPasswordOrEmpty)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsernameOrEmpty, password: ossrhPasswordOrEmpty)
-            }
-
-            pom.project {
-                packaging 'jar'
-
-                name project.name
-                description project.description
-                url project.ext.vcsUrl
-
-                scm {
-                    connection "scm:git:$project.ext.vcsUrl"
-                    developerConnection "scm:git:$project.ext.vcsDev"
-                    url "$project.ext.vcsUrl"
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsernameOrEmpty, password: ossrhPasswordOrEmpty)
                 }
 
-                licenses {
-                    license {
-                        name "GNU Lesser General Public License, Version 2.1"
-                        url "https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt"
-                        distribution "repo"
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsernameOrEmpty, password: ossrhPasswordOrEmpty)
+                }
+
+                pom.project {
+                    packaging 'jar'
+
+                    name project.name
+                    description project.description
+                    url project.ext.vcsUrl
+
+                    scm {
+                        connection "scm:git:$project.ext.vcsUrl"
+                        developerConnection "scm:git:$project.ext.vcsDev"
+                        url "$project.ext.vcsUrl"
                     }
-                }
 
-                developers {
-                    developer {
-                        id "xenomachina"
-                        name "Laurence Gonsalves"
+                    licenses {
+                        license {
+                            name "GNU Lesser General Public License, Version 2.1"
+                            url "https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt"
+                            distribution "repo"
+                        }
+                    }
 
-                        // State-of-the art anti-scraper encryption. ;-)
-                        email "moc.anihcamonex@ecnerual".reverse()
+                    developers {
+                        developer {
+                            id "xenomachina"
+                            name "Laurence Gonsalves"
+
+                            // State-of-the art anti-scraper encryption. ;-)
+                            email "moc.anihcamonex@ecnerual".reverse()
+                        }
                     }
                 }
             }
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // gradle-release plugin config
+    //////////////////////////////////////////////////////////////////////////////
+
+    // Based on https://github.com/researchgate/gradle-release
+
+    // This causes './gradlew release' to also upload release packages
+    afterReleaseBuild.dependsOn uploadArchives
 }
-
-//////////////////////////////////////////////////////////////////////////////
-// gradle-release plugin config
-//////////////////////////////////////////////////////////////////////////////
-
-// Based on https://github.com/researchgate/gradle-release
-
-// This causes './gradlew release' to also upload release packages
-afterReleaseBuild.dependsOn uploadArchives
