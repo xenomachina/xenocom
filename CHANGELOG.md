@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.0.6 - 2018-03-19
+
+### Changed
+
+- Releasing to Maven Central instead of Bintray. This is probably the only
+  really externally visible change.
+- Releases are now signed
+- Gradle wrapper (gradlew) now updated to 4.5.1
+- Dependencies updated:
+    dokka = 0.9.16
+    kotlintest = 2.0.7
+    kotlin = 1.2.30
+- Switched to using kotlinter to simplify build (also picks up a newer ktlint
+  now)
+- Cleaned up lint errors caught by newer version of ktlint
+- Fixed formatting of CHANGELOG.md
+
+
 ## 0.0.5 - 2017-06-12
 
 ### Changed
