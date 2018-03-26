@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.0.7 - 2018-03-26
+
+### Changed
+
+- `String.wrapText` now treats multi-newlines as paragraph separators, while single
+  newlines are still treated like spaces. Thanks @leomillon!
+
 ## 0.0.6 - 2018-03-19
 
 ### Changed
